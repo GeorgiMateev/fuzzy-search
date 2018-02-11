@@ -27,7 +27,7 @@ def main():
     # List
     knowledge_base2 = [
         Rule(FuzzyNumber('near', (0, 0, 400), 'X'), []),
-        Rule(FuzzyNumber('popular', (20, 500, 500), 'X'), []),
+        Rule(FuzzyNumber('popular', (200, 500, 500), 'X'), []),
         Rule(FuzzyNumber('cheap', (0, 0, 100), 'X'), []),
         Rule(Term('hotel', ['sheraton', 354, 744, 4.2, 5]), []),
         Rule(Term('landmark', ['st_nedelia', 5, 330, 4.7, 5]), []),

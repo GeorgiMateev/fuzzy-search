@@ -31,7 +31,7 @@ class Reasoner:
                 updated_rule_variables = self.update_variables(rule_variables, head_variables_map)
                 for body_truthfulness, solved_variables in self.solve_rule_body(rule.get_body(), updated_rule_variables):
                     updated_query_variables = self.update_variables(query_variables_map, solved_variables)
-                    yield self.mamdani(body_truthfulness), updated_query_variables
+                    yield [self.mamdani(body_truthfulness)], updated_query_variables
 
     def solve_rule_body(self, rule_body: List[Term], rule_variables: Dict) -> (List, Dict):
         if len(rule_body) == 0:
@@ -41,7 +41,7 @@ class Reasoner:
             for truthfulness, variables in self.solve(transformed_term):
                 updated_rule_variables = self.update_variables(rule_variables, variables)
                 for terms_truthfulness, solved_variables in self.solve_rule_body(rule_body[1:], updated_rule_variables):
-                    yield [truthfulness].append(terms_truthfulness), solved_variables
+                    yield [*truthfulness, *terms_truthfulness], solved_variables
 
     def mamdani(self, truths: List):
         return min(truths)
