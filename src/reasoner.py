@@ -30,7 +30,7 @@ class Reasoner:
                     yield self.mamdani(body_truthfulness), updated_query_variables
 
     def solve_rule_body(self, rule_body: List[Term], rule_variables: List):
-        transformed_term = self.transform_term_variables(rule_body[0], rule_variables)
+        transformed_term = rule_body[0].assign_variables(rule_variables)
         for truthfulness, variables in self.solve(transformed_term):
             updated_rule_variables = self.update_variables(rule_variables, variables)
             for terms_truthfulness, solved_variables in self.solve_rule_body(rule_body[1:], updated_rule_variables):
@@ -80,23 +80,5 @@ class Reasoner:
             else:
                 updated_variables[q_variable] = query_variables[q_variable]
         return updated_variables
-
-    def transform_term_variables(self, term: List, variables: List):
-        transformed = []
-        for param in term:
-            if isinstance(param, List):
-                transformed_list = self.transform_term_variables(param, variables)
-                transformed.append(transformed_list)
-            elif param in variables:
-                transformed.append(variables[param])
-            else:
-                transformed.append(param)
-        return transformed
-
-
-
-
-
-
 
 
