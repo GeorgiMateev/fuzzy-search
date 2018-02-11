@@ -1,8 +1,10 @@
 from typing import List
 
 
-class Term(List):
-    def __init__(self):
+class Term(list):
+    def __init__(self, *args):
+        super(Term, self).__init__(list(args))
+
         self.is_self_solvable = False
 
     def get_functor(self):
