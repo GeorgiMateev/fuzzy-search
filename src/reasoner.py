@@ -41,7 +41,8 @@ class Reasoner:
             for truthfulness, variables in self.solve(transformed_term):
                 updated_rule_variables = self.update_variables(rule_variables, variables)
                 for terms_truthfulness, solved_variables in self.solve_rule_body(rule_body[1:], updated_rule_variables):
-                    yield [*truthfulness, *terms_truthfulness], solved_variables
+                    updated_body_variables = self.update_variables(updated_rule_variables, solved_variables)
+                    yield [*truthfulness, *terms_truthfulness], updated_body_variables
 
     def mamdani(self, truths: List):
         return min(truths)
