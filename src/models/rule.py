@@ -14,24 +14,13 @@ class Rule(tuple):
         return self[1]
 
     def get_variables(self) -> Dict:
-        variables = self.__get_term_variables(self.get_head())
+        variables = self.get_head().get_variables()
 
-        term_variables = self.__get_term_variables(self.get_body())
+        for term in self.get_body():
+            term_variables = term.get_variables()
 
-        for t_var, t_var_value in term_variables.items():
-            variables[t_var] = t_var_value
-
-        return variables
-
-    def __get_term_variables(self, term: List) -> Dict:
-        variables = {}
-        for param in term:
-            if isinstance(param, str) and param[0].isupper():
-                variables[param] = param
-            elif isinstance(param, List):
-                param_variables = self.__get_term_variables(param)
-                for t_var, t_var_value in param_variables.items():
-                    variables[t_var] = t_var_value
+            for t_var, t_var_value in term_variables.items():
+                variables[t_var] = t_var_value
 
         return variables
 
