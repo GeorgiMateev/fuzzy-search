@@ -12,26 +12,26 @@ class Reasoner:
         for truthfulness, variables in self.solve(term):
             yield truthfulness, variables
 
-    # def query(self, query: List[Term]):
-    #     for term in query:
-    #         for truthfulness, variables in self.solve(term):
-    #
-    #     results = map(lambda term: self.solve(term), query)
-    #     return self.mamdani(results)
+    def complex_query(self, query: List[Term]):
+        rule = Rule(Term(), query)
+        variables = rule.get_variables()
+        result = self.solve_rule_body(rule.get_body(), variables)
+        for truthfulness, solved_vars in result:
+            yield [self.mamdani(truthfulness)], solved_vars
 
     def solve(self, query_term: Term):
         if query_term.is_self_solvable:
             truthfulness, variables = query_term.self_solve()
             yield [truthfulness], variables
-
-        for rule in self.knowledge_base:
-            rule_variables = rule.get_variables()
-            unified, query_variables_map, head_variables_map = self.try_unify(query_term, rule.get_head())
-            if unified:
-                updated_rule_variables = self.update_variables(rule_variables, head_variables_map)
-                for body_truthfulness, solved_variables in self.solve_rule_body(rule.get_body(), updated_rule_variables):
-                    updated_query_variables = self.update_variables(query_variables_map, solved_variables)
-                    yield [self.mamdani(body_truthfulness)], updated_query_variables
+        else:
+            for rule in self.knowledge_base:
+                rule_variables = rule.get_variables()
+                unified, query_variables_map, head_variables_map = self.try_unify(query_term, rule.get_head())
+                if unified:
+                    updated_rule_variables = self.update_variables(rule_variables, head_variables_map)
+                    for body_truthfulness, solved_variables in self.solve_rule_body(rule.get_body(), updated_rule_variables):
+                        updated_query_variables = self.update_variables(query_variables_map, solved_variables)
+                        yield [self.mamdani(body_truthfulness)], updated_query_variables
 
     def solve_rule_body(self, rule_body: List[Term], rule_variables: Dict) -> (List, Dict):
         if len(rule_body) == 0:
@@ -119,6 +119,3 @@ class Reasoner:
                 new_vars[variable] = value
 
         return True, new_vars
-
-
-

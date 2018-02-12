@@ -8,23 +8,6 @@ from src.reasoner import Reasoner
 
 
 def main():
-
-    # knowledge_base = [
-    #     (['expensive', ['X', '|', 'T']], [['landmark', ['Y', '_', 'P', '_', '|', '_']], ['calcDist', 'X', 'Y', 'D'], ['near', 'D'], ['popular', 'P']]),
-    #     (['regular', ['X', '|', 'T']], [['landmark', ['Y', '_', 'P', '_', '|', '_']], ['calcDist', 'X', 'Y', 'D'], ['near', 'D'], ['common', 'P']]),
-    #     (['cheap', ['X', '|', 'T']], [['landmark', ['Y', '_', 'P', '_', '|', '_']], ['calcDist', 'X', 'Y', 'D'], ['near', 'D'], ['popular', 'P']]),
-    # ]
-    #
-    # knowledge_base1 = [
-    #     Rule(Term('expensive', ['X', '|', 'T']), [
-    #                 Term('landmark', ['Y', '_', 'P', '_', '|', '_']),
-    #                 Term('calcDist', 'X', 'Y', 'D'),
-    #                 Term('near', 'D'),
-    #                 Term('popular', 'P')]),
-    #     (['regular', ['X', '|', 'T']], [['landmark', ['Y', '_', 'P', '_', '|', '_']], ['calcDist', 'X', 'Y', 'D'], ['near', 'D'], ['common', 'P']]),
-    #     (['cheap', ['X', '|', 'T']], [['landmark', ['Y', '_', 'P', '_', '|', '_']], ['calcDist', 'X', 'Y', 'D'], ['near', 'D'], ['popular', 'P']]),
-    # ]
-    # List
     knowledge_base2 = [
         Rule(FuzzyNumber('near', (0, 0, 400), 'X'), []),
         Rule(FuzzyNumber('popular', (200, 500, 500), 'X'), []),
@@ -40,9 +23,23 @@ def main():
     ]
 
     reasoner = Reasoner(knowledge_base2)
+
     query_results = reasoner.query(Term('expensive', ['sheraton', 354, 744, 4.2, 5]))
+    print('Query result:')
+
     for result in query_results:
         print(result)
+
+    print()
+
+    search_result = reasoner.complex_query( [Term('landmark', ['X', 'C', 'P', '_', '_']),
+                                             FuzzyNumber('popular', (20, 500, 500), 'P'),
+                                             FuzzyNumber('cheap', (0, 0, 100), 'C')])
+
+    print('Search result:')
+    for result in search_result:
+        print(result)
+
 
 
 if __name__ == "__main__":

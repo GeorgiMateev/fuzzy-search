@@ -26,7 +26,11 @@ class FuzzyNumber(Term):
         if not isinstance(param, int) or isinstance(param, float):
             raise ValueError('Please provide int or float parameter to the term.')
 
-        if param < self.fuzzy_number[0]:
+        if self.fuzzy_number[0] == self.fuzzy_number[1] and param <= self.fuzzy_number[0]:
+            return 1, {}
+        elif self.fuzzy_number[1] == self.fuzzy_number[2] and param >= self.fuzzy_number[2]:
+            return 1, {}
+        elif param < self.fuzzy_number[0]:
             return 0, {}
         elif self.fuzzy_number[0] <= param <= self.fuzzy_number[1]:
             return (param - self.fuzzy_number[0]) / (
