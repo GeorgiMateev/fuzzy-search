@@ -19,7 +19,9 @@ def main():
              [Term('landmark', ['Y', '_', 'P', '_', '_']),
               CalculateDistance('X', 'Y', 'D'),
               FuzzyNumber('near', (0, 0, 400), 'D'),
-              FuzzyNumber('popular', (20, 500, 500), 'P')])
+              FuzzyNumber('popular', (20, 500, 500), 'P')]),
+        # Rule(Term('expensive', ['X', 'C', '_', '_', '_']),
+        #      FuzzyNumber('expensive', (120, 500, 500), 'C'))
     ]
 
     reasoner = Reasoner(knowledge_base2)
