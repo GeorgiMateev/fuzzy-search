@@ -29,6 +29,11 @@ class Term(list):
     def get_variables(self) -> Dict:
         return Term.__get_variables(self)
 
+    def __str__(self):
+        format_str = "{}(" + ''.join(['{}' if i == self.get_arity() - 1 else '{}, '
+                             for i in range(self.get_arity())]) + ')'
+        return format_str.format(*[self.get_functor(), *self.get_params()])
+
     @staticmethod
     def __get_variables(params) -> Dict:
         variables = {}

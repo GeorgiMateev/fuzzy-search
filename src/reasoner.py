@@ -16,17 +16,17 @@ class Reasoner:
         :param query: List of terms in AND relation.
         :return: Generates solutions - each with truthfulness and unified variables.
         """
-        rule = Rule(Term(), query)
+        rule = Rule(Term('query'), query)
         variables = rule.get_variables()
         tracer = Tracer()
-        tracer.trace_rule(Term(), {}, rule, variables)
+        tracer.trace_rule(rule.get_head(), {}, rule, variables)
         result = self.solve_rule_body(rule.get_body(), variables, tracer)
         for truthfulness, solved_vars in result:
             truthfulness_implication = self.mamdani(truthfulness)
             tracer.trace_solution(truthfulness_implication, solved_vars)
             yield [truthfulness_implication], solved_vars
 
-        tracer.trace_back()
+        print(tracer)
 
     def solve(self, query_term: Term, tracer: Tracer):
         if query_term.is_self_solvable:

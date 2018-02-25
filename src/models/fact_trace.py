@@ -21,3 +21,6 @@ class FactTrace:
 
     def add_solution(self, solution: Solution):
         self.solutions.append(solution)
+
+    def __str__(self):
+        return str(self.term)

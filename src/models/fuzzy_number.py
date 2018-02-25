@@ -42,3 +42,6 @@ class FuzzyNumber(Term):
             return 0, {}
         else:
             return 0, {}
+        
+    def __str__(self):
+        return super(FuzzyNumber, self).__str__() + ':-' + str(self.get_fuzzy_number())

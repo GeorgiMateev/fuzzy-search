@@ -37,3 +37,6 @@ class Tracer:
     def trace_back(self):
         parent = self.current.get_parent()
         self.current = parent
+
+    def __str__(self):
+        return str(self.current)

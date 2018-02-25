@@ -22,8 +22,22 @@ class Trace:
     def get_parent(self):
         return self.parent
 
+    def get_children(self):
+        return self.children
+
     def add_child(self, child):
         self.children.append(child)
 
     def add_solution(self, solution: Solution):
         self.solutions.append(solution)
+
+    def __str__(self):
+        trace_str = str(self.term) \
+                    + ' -> ' \
+                    + str(self.rule)
+
+        for child in self.get_children():
+            new_line = '        '.join(('\n' + str(child)).splitlines(True))
+            trace_str += new_line
+
+        return trace_str

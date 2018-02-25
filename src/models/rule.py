@@ -1,4 +1,4 @@
-from typing import Tuple, List, Dict
+from typing import List, Dict
 
 from src.models.term import Term
 
@@ -23,4 +23,11 @@ class Rule(tuple):
                 variables[t_var] = t_var_value
 
         return variables
+
+    def __str__(self):
+        format_str = ''.join(['{}' if i == len(self.get_body()) - 1 else '{}, '
+                              for i in range(len(self.get_body()))]) + '.'
+        formatted = format_str.format(*self.get_body())
+
+        return str(self.get_head()) + ':-' + formatted
 
