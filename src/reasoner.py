@@ -1,7 +1,8 @@
-from typing import List, Tuple, Dict, Generator
+from typing import List, Dict
 
 from src.models.rule import Rule
 from src.models.term import Term
+from src.tracer import Tracer
 from src.unifier import Unifier
 
 
@@ -9,16 +10,7 @@ class Reasoner:
     def __init__(self, knowledge_base):
         self.knowledge_base = knowledge_base
 
-    def query(self, term: Term) -> Generator[Tuple[List, Dict]]:
-        """
-        Query the knowledge base with the given term.
-        :param term: A query term.
-        :return: Generates solutions - each with truthfulness and unified variables.
-        """
-        for truthfulness, variables in self.solve(term):
-            yield truthfulness, variables
-
-    def complex_query(self, query: List[Term]) -> Generator[Tuple[List, Dict]]:
+    def complex_query(self, query: List[Term]):
         """
         Query the database with complex query - several terms in AND logical ralation.
         :param query: List of terms in AND relation.
@@ -26,13 +18,21 @@ class Reasoner:
         """
         rule = Rule(Term(), query)
         variables = rule.get_variables()
-        result = self.solve_rule_body(rule.get_body(), variables)
+        tracer = Tracer()
+        tracer.trace_rule(Term(), {}, rule, variables)
+        result = self.solve_rule_body(rule.get_body(), variables, tracer)
         for truthfulness, solved_vars in result:
-            yield [self.mamdani(truthfulness)], solved_vars
+            truthfulness_implication = self.mamdani(truthfulness)
+            tracer.trace_solution(truthfulness_implication, solved_vars)
+            yield [truthfulness_implication], solved_vars
 
-    def solve(self, query_term: Term):
+        tracer.trace_back()
+
+    def solve(self, query_term: Term, tracer: Tracer):
         if query_term.is_self_solvable:
             truthfulness, variables = query_term.self_solve()
+            tracer.trace_fact(query_term, truthfulness, variables)
+            tracer.trace_back()
             yield [truthfulness], variables
         else:
             for rule in self.knowledge_base:
@@ -40,18 +40,30 @@ class Reasoner:
                 unified, query_variables_map, head_variables_map = Unifier.try_unify(query_term, rule.get_head())
                 if unified:
                     updated_rule_variables = self.update_variables(rule_variables, head_variables_map)
-                    for body_truthfulness, solved_variables in self.solve_rule_body(rule.get_body(), updated_rule_variables):
-                        updated_query_variables = self.update_variables(query_variables_map, solved_variables)
-                        yield [self.mamdani(body_truthfulness)], updated_query_variables
 
-    def solve_rule_body(self, rule_body: List[Term], rule_variables: Dict) -> (List, Dict):
+                    tracer.trace_rule(query_term, query_variables_map, rule, updated_rule_variables)
+
+                    for body_truthfulness, solved_variables in self.solve_rule_body(rule.get_body(), updated_rule_variables, tracer):
+                        updated_query_variables = self.update_variables(query_variables_map, solved_variables)
+                        body_truthfulness_implication = self.mamdani(body_truthfulness)
+
+                        tracer.trace_solution(body_truthfulness_implication, updated_query_variables)
+
+                        yield [body_truthfulness_implication], updated_query_variables
+
+                    tracer.trace_back()
+
+    def solve_rule_body(self, rule_body: List[Term], rule_variables: Dict, tracer: Tracer) -> (List, Dict):
         if len(rule_body) == 0:
             yield [1], {}
         else:
             transformed_term = rule_body[0].assign_variables(rule_variables)
-            for truthfulness, variables in self.solve(transformed_term):
+            # Here we are just updating the whole rule variables with every next term in the body
+            # without checking for conflicts because we are solving from left to right:
+            # each new term have less and less unsolved rule variables.
+            for truthfulness, variables in self.solve(transformed_term, tracer):
                 updated_rule_variables = self.update_variables(rule_variables, variables)
-                for terms_truthfulness, solved_variables in self.solve_rule_body(rule_body[1:], updated_rule_variables):
+                for terms_truthfulness, solved_variables in self.solve_rule_body(rule_body[1:], updated_rule_variables, tracer):
                     updated_body_variables = self.update_variables(updated_rule_variables, solved_variables)
                     yield [*truthfulness, *terms_truthfulness], updated_body_variables
 

@@ -26,7 +26,7 @@ def main():
 
     reasoner = Reasoner(knowledge_base2)
 
-    query_results = reasoner.query(Term('expensive', ['sheraton', 354, 744, 4.2, 5]))
+    query_results = reasoner.complex_query([Term('expensive', ['sheraton', 354, 744, 4.2, 5])])
     print('Query result:')
 
     for result in query_results:
