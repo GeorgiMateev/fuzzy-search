@@ -8,7 +8,7 @@ class FactsCheckingTestCase(unittest.TestCase):
     def test_expensive_hotel_if_popular_landscape(self):
         reasoner = Reasoner(expensive_hotel)
 
-        query_results = reasoner.query(Term('expensive', ['sheraton', 354, 744, 4.2, 5]))
+        query_results = reasoner.complex_query([Term('expensive', ['sheraton', 354, 744, 4.2, 5])])
 
         i = 0
         for r in query_results:
