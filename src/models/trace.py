@@ -33,8 +33,13 @@ class Trace:
 
     def __str__(self):
         trace_str = str(self.term) \
-                    + ' -> ' \
-                    + str(self.rule)
+                    + ((' -> ' + str(self.rule)) if self.rule else '')
+
+        if len(self.solutions) > 0:
+            trace_str += '    |'
+
+        for s in self.solutions:
+            trace_str += (' ' + str(s))
 
         for child in self.get_children():
             new_line = '        '.join(('\n' + str(child)).splitlines(True))

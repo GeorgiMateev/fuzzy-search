@@ -29,5 +29,5 @@ class Rule(tuple):
                               for i in range(len(self.get_body()))]) + '.'
         formatted = format_str.format(*self.get_body())
 
-        return str(self.get_head()) + ':-' + formatted
+        return str(self.get_head()) + (':-' + formatted if formatted != '.' else '')
 

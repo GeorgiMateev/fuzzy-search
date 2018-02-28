@@ -23,7 +23,7 @@ class Reasoner:
         result = self.solve_rule_body(rule.get_body(), variables, tracer)
         for truthfulness, solved_vars in result:
             truthfulness_implication = self.mamdani(truthfulness)
-            tracer.trace_solution(truthfulness_implication, solved_vars)
+            # tracer.trace_solution(truthfulness_implication, solved_vars)
             yield [truthfulness_implication], solved_vars
 
         print(tracer)
@@ -47,10 +47,9 @@ class Reasoner:
                         updated_query_variables = self.update_variables(query_variables_map, solved_variables)
                         body_truthfulness_implication = self.mamdani(body_truthfulness)
 
-                        tracer.trace_solution(body_truthfulness_implication, updated_query_variables)
-
                         yield [body_truthfulness_implication], updated_query_variables
 
+                        # tracer.trace_solution(body_truthfulness_implication, updated_query_variables)
                     tracer.trace_back()
 
     def solve_rule_body(self, rule_body: List[Term], rule_variables: Dict, tracer: Tracer) -> (List, Dict):
