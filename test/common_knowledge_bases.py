@@ -1,7 +1,7 @@
-from src.models.calc_dist import CalculateDistance
-from src.models.fuzzy_number import FuzzyNumber
 from src.models.rule import Rule
 from src.models.term import Term
+from src.modules.fuzzy.fuzzy_number import FuzzyNumber
+from test.mocks.calc_dist import CalculateDistance
 
 expensive_hotel = [
     Rule(FuzzyNumber('near', (0, 0, 400), 'X'), []),

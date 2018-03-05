@@ -1,7 +1,7 @@
-from src.models.term import Term
+from src.models.self_solvable_term import SelfSolvableTerm
 
 
-class CalculateDistance(Term):
+class CalculateDistance(SelfSolvableTerm):
     def __init__(self, *args):
         new_args = list(('calculateDistance', *args))
         super(CalculateDistance, self).__init__(*new_args)

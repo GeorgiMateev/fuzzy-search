@@ -1,9 +1,9 @@
 from typing import Tuple
 
-from src.models.term import Term
+from src.models.self_solvable_term import SelfSolvableTerm
 
 
-class FuzzyNumber(Term):
+class FuzzyNumber(SelfSolvableTerm):
     def __init__(self, functor: str, fuzzy_number: Tuple[int, int, int], *args):
         new_args = list((functor, *args))
         super(FuzzyNumber, self).__init__(*new_args)
